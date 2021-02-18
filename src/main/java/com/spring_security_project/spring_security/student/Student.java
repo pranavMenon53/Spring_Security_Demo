@@ -17,4 +17,18 @@ public class Student {
   public String getStudentName() {
     return this.studentName;
   }
+
+  @Override
+  public String toString() {
+    return (
+      "{" +
+      " studentId='" +
+      getStudentId() +
+      "'" +
+      ", studentName='" +
+      getStudentName() +
+      "'" +
+      "}"
+    );
+  }
 }

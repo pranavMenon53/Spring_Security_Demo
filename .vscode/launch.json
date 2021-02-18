@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Launch ApplicationUserPermissions",
+            "request": "launch",
+            "mainClass": "com.spring_security_project.spring_security.security.ApplicationUserPermissions",
+            "projectName": "spring_security"
+        },
+        {
+            "type": "java",
             "name": "Launch Current File",
             "request": "launch",
             "mainClass": "${file}"

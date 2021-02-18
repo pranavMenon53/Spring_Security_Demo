@@ -15,4 +15,7 @@ public enum ApplicationUserPermissions {
   public String getPermission() {
     return permission;
   }
+  // public static void main(String[] args) {
+  //   System.out.println(STUDENT_READ.permission);
+  // }
 }
