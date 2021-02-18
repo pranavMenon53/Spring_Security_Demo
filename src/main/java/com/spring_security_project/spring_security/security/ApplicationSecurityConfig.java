@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -32,27 +33,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     // NOTE - Order of antMatchers really matters!
     http
-      //CSRF - CROSS SITE REQUEST FORGERY - *read more on this*
-      //Disable CSRF only if your clients do not use browsers
-      // .csrf()
-      // .disable()
+      .csrf()
+      .disable()
       .authorizeRequests()
-      //
       .antMatchers("/", "index", "/css/*", "/js/*")
       .permitAll()
-      //Only STUDENT can access this API
       .antMatchers("/api/**")
-      //
-      .hasAuthority("ROLE_" + STUDENT.name()) // ROLE_STUDENT is how we save role names
-      //The antmatchers below are replaced by Annotations in "StudentManagementController.java"
-      // .antMatchers(HttpMethod.DELETE, "/management/api/**")
-      // .hasAnyAuthority(COURSE_WRITE.getPermission())
-      // .antMatchers(HttpMethod.POST, "/management/api/**")
-      // .hasAnyAuthority(COURSE_WRITE.getPermission())
-      // .antMatchers(HttpMethod.PUT, "/management/api/**")
-      // .hasAnyAuthority(COURSE_WRITE.getPermission())
-      // .antMatchers(HttpMethod.GET, "/management/api/**")
-      // .hasAnyAuthority(COURSE_READ.getPermission())
+      .hasAuthority("ROLE_" + STUDENT.name()) // ROLE_STUDENT is how spring saves role names
       .anyRequest()
       .authenticated()
       .and()
@@ -92,50 +79,3 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     return new InMemoryUserDetailsManager(user, adminUser, traineeUser);
   }
 }
-//
-// The blocks of code below are used to implement ROLE BASED or PERMISSION BASED AUTHENTICATION
-// We can also do this by using Annotations.
-// Refer to "StudentManagementController.java"  for more information
-//
-// Use the block below in "configure" method for ROLE BASED AUTHENTICATION
-// Change the User configuration in "userDetailsService" accordingly
-/*
-        //
-        .antMatchers("/api/**")
-        .hasRole(STUDENT.name())
-        //
-        .antMatchers(HttpMethod.DELETE, "/management/api/**")
-        .hasAnyRole(ADMIN.name(), TRAINEE.name())
-        //
-        .antMatchers(HttpMethod.POST, "/management/api/**")
-        .hasAnyRole(ADMIN.name(), TRAINEE.name())
-        //
-        .antMatchers(HttpMethod.PUT, "/management/api/**")
-        .hasAnyRole(ADMIN.name(), TRAINEE.name())
-        //
-        .antMatchers(HttpMethod.GET, "/management/api/**")
-        .hasAnyRole(ADMIN.name(), TRAINEE.name())
-        //
-      */
-// Use the block below in "configure" method for PERMISSION BASED AUTHENTICATION
-// Change the User configuration in "userDetailsService" accordingly
-/*
-         //Only STUDENT can access this API
-        .antMatchers("/api/**")
-        //
-        .hasAuthority("ROLE_" + STUDENT.name()) // ROLE_STUDENT is how we save role names
-        //
-        .antMatchers(HttpMethod.DELETE, "/management/api/**")
-        .hasAnyAuthority(COURSE_WRITE.getPermission())
-        //
-        .antMatchers(HttpMethod.POST, "/management/api/**")
-        .hasAnyAuthority(COURSE_WRITE.getPermission())
-        //
-        .antMatchers(HttpMethod.PUT, "/management/api/**")
-        .hasAnyAuthority(COURSE_WRITE.getPermission())
-        //
-        .antMatchers(HttpMethod.GET, "/management/api/**")
-        .hasAnyAuthority(COURSE_READ.getPermission())
-        //
-      */
-//
