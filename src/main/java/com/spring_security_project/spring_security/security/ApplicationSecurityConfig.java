@@ -5,6 +5,7 @@ import static com.spring_security_project.spring_security.security.ApplicationUs
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -29,8 +30,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
-      .antMatchers("/", "index", "/home", "/css/*", "/js/*")
+      .antMatchers("/", "index", "/css/*", "/js/*")
       .permitAll()
+      .antMatchers("api/**")
+      .hasRole(STUDENT.name())
       .anyRequest()
       .authenticated()
       .and()
@@ -43,8 +46,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     UserDetails user = User
       .builder()
       .username("David")
-      //   .password("Pas$WorD")
-      .password(passwordEncoder.encode("Pas$WorD"))
+      .password(passwordEncoder.encode("password"))
       .roles(STUDENT.name()) // STUDENT comes from ApplicationUserRoles enum
       .build();
 
