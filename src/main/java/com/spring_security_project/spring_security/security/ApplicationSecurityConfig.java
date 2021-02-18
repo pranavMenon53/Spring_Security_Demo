@@ -5,7 +5,6 @@ import static com.spring_security_project.spring_security.security.ApplicationUs
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,9 +14,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-// Basic Auth works
-// Role base authentication does not work
-// Both Admin and Student are able to acess the api
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -35,7 +31,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .authorizeRequests()
       .antMatchers("/", "index", "/css/*", "/js/*")
       .permitAll()
-      .antMatchers("api/**")
+      .antMatchers("/api/**")
       .hasRole(STUDENT.name())
       .anyRequest()
       .authenticated()
@@ -60,6 +56,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .roles(ADMIN.name()) // ADMIN comes from ApplicationUserRoles enum
       .build();
 
-    return new InMemoryUserDetailsManager(user, adminUser);
+    UserDetails traineeUser = User
+      .builder()
+      .username("Tom")
+      .password(passwordEncoder.encode("password"))
+      .roles(TRAINEE.name())
+      .build();
+
+    return new InMemoryUserDetailsManager(user, adminUser, traineeUser);
   }
 }
