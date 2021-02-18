@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +42,11 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .anyRequest()
       .authenticated()
       .and()
-      .httpBasic();
+      // .httpBasic();
+      //Switching from basic auth to form based authentication
+      .formLogin()
+      .loginPage("/login")
+      .permitAll();
   }
 
   @Override
