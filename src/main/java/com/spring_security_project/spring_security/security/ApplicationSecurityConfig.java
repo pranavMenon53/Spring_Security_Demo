@@ -38,7 +38,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .permitAll()
       //Only STUDENT can access this API
       .antMatchers("/api/**")
-      // .hasRole(STUDENT.name())
+      //
       .hasAuthority("ROLE_" + STUDENT.name()) // ROLE_STUDENT is how we save role names
       //
       .antMatchers(HttpMethod.DELETE, "/management/api/**")
@@ -52,7 +52,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       //
       .antMatchers(HttpMethod.GET, "/management/api/**")
       .hasAnyAuthority(COURSE_READ.getPermission())
-      // .hasAnyRole(ADMIN.name(), TRAINEE.name())
       //
       .anyRequest()
       .authenticated()
@@ -67,26 +66,70 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .builder()
       .username("David")
       .password(passwordEncoder.encode("password"))
-      .authorities(STUDENT.getGrantedAuthorities())
-      // .roles(STUDENT.name()) // STUDENT comes from ApplicationUserRoles enum
+      // STUDENT comes from ApplicationUserRoles enum
+      // .authorities(STUDENT.getGrantedAuthorities())
+      .roles(STUDENT.name())
       .build();
 
     UserDetails adminUser = User
       .builder()
       .username("Bob")
       .password(passwordEncoder.encode("password123"))
-      .authorities(ADMIN.getGrantedAuthorities())
-      // .roles(ADMIN.name()) // ADMIN comes from ApplicationUserRoles enum
+      // ADMIN comes from ApplicationUserRoles enum
+      // .authorities(ADMIN.getGrantedAuthorities())
+      .roles(ADMIN.name())
       .build();
 
     UserDetails traineeUser = User
       .builder()
       .username("Tom")
       .password(passwordEncoder.encode("password"))
-      .authorities(TRAINEE.getGrantedAuthorities())
-      // .roles(TRAINEE.name())
+      // .authorities(TRAINEE.getGrantedAuthorities())
+      .roles(TRAINEE.name())
       .build();
 
     return new InMemoryUserDetailsManager(user, adminUser, traineeUser);
   }
 }
+// Use the block below in "configure" method for ROLE BASED AUTHENTICATION
+// Change the User configuration in "userDetailsService" accordingly
+/*
+        //
+        .antMatchers("/api/**")
+        .hasRole(STUDENT.name())
+        //
+        .antMatchers(HttpMethod.DELETE, "/management/api/**")
+        .hasAnyRole(ADMIN.name(), TRAINEE.name())
+        //
+        .antMatchers(HttpMethod.POST, "/management/api/**")
+        .hasAnyRole(ADMIN.name(), TRAINEE.name())
+        //
+        .antMatchers(HttpMethod.PUT, "/management/api/**")
+        .hasAnyRole(ADMIN.name(), TRAINEE.name())
+        //
+        .antMatchers(HttpMethod.GET, "/management/api/**")
+        .hasAnyRole(ADMIN.name(), TRAINEE.name())
+        //
+      */
+// Use the block below in "configure" method for PERMISSION BASED AUTHENTICATION
+// Change the User configuration in "userDetailsService" accordingly
+/*
+         //Only STUDENT can access this API
+        .antMatchers("/api/**")
+        //
+        .hasAuthority("ROLE_" + STUDENT.name()) // ROLE_STUDENT is how we save role names
+        //
+        .antMatchers(HttpMethod.DELETE, "/management/api/**")
+        .hasAnyAuthority(COURSE_WRITE.getPermission())
+        //
+        .antMatchers(HttpMethod.POST, "/management/api/**")
+        .hasAnyAuthority(COURSE_WRITE.getPermission())
+        //
+        .antMatchers(HttpMethod.PUT, "/management/api/**")
+        .hasAnyAuthority(COURSE_WRITE.getPermission())
+        //
+        .antMatchers(HttpMethod.GET, "/management/api/**")
+        .hasAnyAuthority(COURSE_READ.getPermission())
+        //
+      */
+//
