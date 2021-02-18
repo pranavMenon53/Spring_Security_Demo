@@ -1,12 +1,11 @@
 package com.spring_security_project.spring_security.security;
 
-import static com.spring_security_project.spring_security.security.ApplicationUserPermissions.*;
 import static com.spring_security_project.spring_security.security.ApplicationUserRoles.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,6 +17,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+// prePostEnabled is set to true inorder to aloow us to make use of @PreAuthorize()
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
@@ -29,6 +30,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+    // NOTE - Order of antMatchers really matters!
     http
       .csrf()
       .disable()
@@ -40,19 +42,15 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatchers("/api/**")
       //
       .hasAuthority("ROLE_" + STUDENT.name()) // ROLE_STUDENT is how we save role names
-      //
-      .antMatchers(HttpMethod.DELETE, "/management/api/**")
-      .hasAnyAuthority(COURSE_WRITE.getPermission())
-      //
-      .antMatchers(HttpMethod.POST, "/management/api/**")
-      .hasAnyAuthority(COURSE_WRITE.getPermission())
-      //
-      .antMatchers(HttpMethod.PUT, "/management/api/**")
-      .hasAnyAuthority(COURSE_WRITE.getPermission())
-      //
-      .antMatchers(HttpMethod.GET, "/management/api/**")
-      .hasAnyAuthority(COURSE_READ.getPermission())
-      //
+      //The antmatchers below are replaced by Annotations in "StudentManagementController.java"
+      // .antMatchers(HttpMethod.DELETE, "/management/api/**")
+      // .hasAnyAuthority(COURSE_WRITE.getPermission())
+      // .antMatchers(HttpMethod.POST, "/management/api/**")
+      // .hasAnyAuthority(COURSE_WRITE.getPermission())
+      // .antMatchers(HttpMethod.PUT, "/management/api/**")
+      // .hasAnyAuthority(COURSE_WRITE.getPermission())
+      // .antMatchers(HttpMethod.GET, "/management/api/**")
+      // .hasAnyAuthority(COURSE_READ.getPermission())
       .anyRequest()
       .authenticated()
       .and()
@@ -67,8 +65,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .username("David")
       .password(passwordEncoder.encode("password"))
       // STUDENT comes from ApplicationUserRoles enum
-      // .authorities(STUDENT.getGrantedAuthorities())
-      .roles(STUDENT.name())
+      .authorities(STUDENT.getGrantedAuthorities())
+      // .roles(STUDENT.name())
       .build();
 
     UserDetails adminUser = User
@@ -76,21 +74,27 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .username("Bob")
       .password(passwordEncoder.encode("password123"))
       // ADMIN comes from ApplicationUserRoles enum
-      // .authorities(ADMIN.getGrantedAuthorities())
-      .roles(ADMIN.name())
+      .authorities(ADMIN.getGrantedAuthorities())
+      // .roles(ADMIN.name())
       .build();
 
     UserDetails traineeUser = User
       .builder()
       .username("Tom")
-      .password(passwordEncoder.encode("password"))
-      // .authorities(TRAINEE.getGrantedAuthorities())
-      .roles(TRAINEE.name())
+      .password(passwordEncoder.encode("password123"))
+      // TRAINEE comes from ApplicationUserRoles enum
+      .authorities(TRAINEE.getGrantedAuthorities())
+      // .roles(TRAINEE.name())
       .build();
 
     return new InMemoryUserDetailsManager(user, adminUser, traineeUser);
   }
 }
+//
+// The blocks of code below are used to implement ROLE BASED or PERMISSION BASED AUTHENTICATION
+// We can also do this by using Annotations.
+// Refer to "StudentManagementController.java"  for more information
+//
 // Use the block below in "configure" method for ROLE BASED AUTHENTICATION
 // Change the User configuration in "userDetailsService" accordingly
 /*
