@@ -1,5 +1,8 @@
 package com.spring_security_project.spring_security.security;
 
+import static com.spring_security_project.spring_security.security.ApplicationUserRoles.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +20,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
 
+  @Autowired
   public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
     this.passwordEncoder = passwordEncoder;
   }
@@ -41,9 +45,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .username("David")
       //   .password("Pas$WorD")
       .password(passwordEncoder.encode("Pas$WorD"))
-      .roles("STUDENT")
+      .roles(STUDENT.name()) // STUDENT comes from ApplicationUserRoles enum
       .build();
 
-    return new InMemoryUserDetailsManager(user);
+    UserDetails adminUser = User
+      .builder()
+      .username("Bob")
+      .password(passwordEncoder.encode("password123"))
+      .roles(ADMIN.name()) // ADMIN comes from ApplicationUserRoles enum
+      .build();
+
+    return new InMemoryUserDetailsManager(user, adminUser);
   }
 }
