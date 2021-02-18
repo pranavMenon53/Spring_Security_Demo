@@ -22,7 +22,7 @@ public class StudentManagementController {
   @GetMapping
   @PreAuthorize("hasAuthority('student:read')")
   public List<Student> getStudentList() {
-    System.out.println("\n\nGET REQ!\n\n");
+    System.out.println("\n\nGET req!\n\n");
     return this.studentList;
   }
 
@@ -51,7 +51,7 @@ public class StudentManagementController {
     @RequestBody Student student
   ) {
     System.out.println(
-      "Updating : " + studentId + " , " + student.toString() + "\n\n"
+      "\n\nUpdating : " + studentId + " , " + student.toString() + "\n\n"
     );
   }
 }

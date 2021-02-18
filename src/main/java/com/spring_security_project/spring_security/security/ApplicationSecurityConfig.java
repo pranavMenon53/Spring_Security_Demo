@@ -32,8 +32,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     // NOTE - Order of antMatchers really matters!
     http
-      .csrf()
-      .disable()
+      //CSRF - CROSS SITE REQUEST FORGERY - *read more on this*
+      //Disable CSRF only if your clients do not use browsers
+      // .csrf()
+      // .disable()
       .authorizeRequests()
       //
       .antMatchers("/", "index", "/css/*", "/js/*")
