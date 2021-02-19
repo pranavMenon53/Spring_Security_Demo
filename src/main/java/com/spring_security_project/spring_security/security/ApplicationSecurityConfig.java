@@ -49,8 +49,14 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       .formLogin()
       .loginPage("/login")
       .permitAll()
+      //We use the "passwordParameter" to look for a input with it's name set to the specified value
+      //Now Spring Security will look for a parameter "password123" (look into login.html) and treat it's value as the password
+      //Same is the case for "usernameParameter" and "rememberMeParameter"
+      .passwordParameter("password123")
+      .usernameParameter("usernamePQR")
       .and()
       .rememberMe()
+      .rememberMeParameter("remember-meXYZ")
       .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
       //Overiding the existing "KEY" provided by String to create a MD5 hash
       .key("Provide_Your_Custom_Secure_Key_Here!@#")
