@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudentController {
 
   private static List<Student> studentList = Arrays.asList(
-    new Student(1, "Purima"),
+    new Student(1, "Purnima"),
     new Student(2, "Pranav"),
     new Student(3, "Amy"),
     new Student(4, "Jake")
