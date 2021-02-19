@@ -2,6 +2,7 @@ package com.spring_security_project.spring_security.security;
 
 import static com.spring_security_project.spring_security.security.ApplicationUserRoles.*;
 
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -46,7 +48,25 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
       //Switching from basic auth to form based authentication
       .formLogin()
       .loginPage("/login")
-      .permitAll();
+      .permitAll()
+      .and()
+      .rememberMe()
+      .tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(21))
+      //Overiding the existing "KEY" provided by String to create a MD5 hash
+      .key("Provide_Your_Custom_Secure_Key_Here!@#")
+      .and()
+      //Spring Provides a default "LOGOUT" handler at "/logout" url
+      //Here, we specify out own logout handler that overrides the one provided by String
+      .logout()
+      .logoutUrl("/logout")
+      .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+      // This ^ happens by default
+      // When CSRF is enabled, we must use a POST reqest to logout and not a get
+      // Commenting out "logoutRequestMatcher" will result in default behaviour
+      .clearAuthentication(true)
+      .invalidateHttpSession(true)
+      .deleteCookies("JSESSIONID", "remember-me")
+      .logoutSuccessUrl("/login");
   }
 
   @Override
