@@ -3,7 +3,6 @@ package com.spring_security_project.spring_security.security;
 import static com.spring_security_project.spring_security.security.ApplicationUserRoles.*;
 
 import com.spring_security_project.spring_security.Auth.ApplicationUserService;
-import com.spring_security_project.spring_security.Auth.ApplicationUserService;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

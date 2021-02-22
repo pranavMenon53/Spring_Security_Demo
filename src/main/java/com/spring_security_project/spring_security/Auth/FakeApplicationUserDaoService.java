@@ -2,7 +2,6 @@ package com.spring_security_project.spring_security.Auth;
 
 import static com.spring_security_project.spring_security.security.ApplicationUserRoles.*;
 
-import com.google.common.collect.Lists;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
