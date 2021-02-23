@@ -91,3 +91,9 @@ TRAINEE -
               .userDetailsService(applicationUserService)
               //
             "
+
+  2. *Swagger* - A popular documentation formats for RESTful services
+
+        a) http://localhost:8080/v2/api-docs
+
+        b) http://localhost:8080/swagger-ui.html
